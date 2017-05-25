@@ -2,7 +2,10 @@ package com.lugiee.user.coolweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +27,8 @@ import com.lugiee.user.coolweather.util.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by user on 2017/5/23.
@@ -67,6 +72,13 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+        if(sharedPreferences.getBoolean("city_selected",false)){
+            Intent intent=new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_choosearea);
         Log.e("chooseActivty", "oncreat");
@@ -85,6 +97,13 @@ public class ChooseAreaActivity extends Activity {
                 }else if(currentLevel==LEVEL_CITY){
                     selectedCity=cityList.get(position);
                     queryCounties();
+                }else if(currentLevel==LEVEL_COUNTY){
+                    String countyCode = countyList.get(position).getCountyCode();
+                    Log.d(TAG, countyCode+"h");
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("countyCode", countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
