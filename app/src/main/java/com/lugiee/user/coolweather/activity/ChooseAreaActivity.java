@@ -68,12 +68,13 @@ public class ChooseAreaActivity extends Activity {
     private List<County> countyList;
     private ArrayAdapter<String> adapter;
     private ProgressDialog progressDialog;
-
+    private boolean isFromWeatherActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isFromWeatherActivity=getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        if(sharedPreferences.getBoolean("city_selected",false)){
+        if(sharedPreferences.getBoolean("city_selected",false)&& !isFromWeatherActivity){
             Intent intent=new Intent(this,WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -243,7 +244,13 @@ public class ChooseAreaActivity extends Activity {
         }else if(currentLevel==LEVEL_CITY){
             queryProvinces();
         }else{
+            if (isFromWeatherActivity) {
+                Log.d(TAG, "issi");
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+            }
             finish();
+
         }
     }
 }
